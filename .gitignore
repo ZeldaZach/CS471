@@ -1,8 +1,6 @@
+.DS_Store
 *.doc
 *.docx
 *.ppt
 *.pptx
 
-.DS_Store
-
-pack_hw.sh
