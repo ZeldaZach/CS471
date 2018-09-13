@@ -1,0 +1,251 @@
+Homework 2
+
+Problem 1 Answer:
+<main> := <parse>
+<parse> := <command>
+<command> := <expr>
+<expr> := <term> '+' <expr> | <term>
+<term> := <factor> '*' <term> | <factor>
+<factor> := '(' <expr> ')' | <number>
+<number> := <digit> <number> | <digit>
+<digit> := 0 | 1 | ... | 9
+
+This grammar is right associative. This causes multiplication to occur before addition in this grammar. 
+
+
+
+Problem 2 Answer:
+<main> := <parse>
+<parse> := <command>
+<command> := <expr>
+<expr> := <min> '+' <expr> | <min>
+<min> := <term> '-' <min> | <term>
+<term> := <factor> '*' <term> | <factor>
+<factor> := '(' <expr> ')' | <number>
+<number> := <digit> <number> | <digit>
+<digit> := 0 | 1 | ... | 9
+
+
+
+Problem 3 Answer:
+1 + 2 - 2:
+<main>
+<parse>
+<command>
+<expr>
+<min> + <expr>
+<term> + <expr>
+<factor> + <expr>
+<number> + <expr>
+1 + <expr>
+1 + <min>
+1 + <term> - <min>
+1 + <factor> - <min>
+1 + <number> - <min>
+1 + 2 - <min>
+1 + 2 - <term>
+1 + 2 - <factor>
+1 + 2 - <number>
+1 + 2 - 2
+
+2 - 3 * 5:
+<main>
+<parse>
+<command>
+<expr>
+<min>
+<term> - <min>
+<factor> - <min>
+<number> - <min>
+2 - <min>
+2 - <term>
+2 - <factor> * <term>
+2 - <nuber> * <term>
+2 - 3 * <term>
+2 - 3 * <factor>
+2 - 3 * <number>
+2 - 3 * 5
+
+10 - 5 + 2 - 3:
+<main>
+<parse>
+<command>
+<expr>
+<min> + <expr>
+<term> - <min> + <expr>
+<factor> - <min> + <expr>
+<number> - <min> + <expr>
+10 - <min> + <expr>
+10 - <term> + <expr>
+10 - <factor> + <expr>
+10 - <number> + <expr>
+10 - 5 + <expr>
+10 - 5 + <min>
+10 - 5 + <term> - <min>
+10 - 5 + <factor> - <min>
+10 - 5 + <number> - <min>
+10 - 5 + 2 - <min>
+10 - 5 + 2 - <term>
+10 - 5 + 2 - <factor>
+10 - 5 + 2 - <number>
+10 - 5 + 2 - 3
+
+10 - 7 - 2:
+<main>
+<parse>
+<command>
+<expr>
+<min>
+<term> - <min>
+<factor> - <min>
+<number> - <min>
+10 - <min>
+10 - <term> - <min>
+10 - <factor> - <min>
+10 - <number> - <min>
+10 - 7 - <min>
+10 - 7 - <term>
+10 - 7 - <factor>
+10 - 7 - <number>
+10 - 7 - 2
+
+
+
+Problem 5 Answer:
+<main> := <parse>
+<parse> := <command>
+<command> := <expr>
+<expr> := <term> {+ <term>}
+<term> := <factor> {* <factor>}
+<factor> := (<expr>) | <number>
+<number> := <digit> <digit>*
+<digit> := 0 | 1 | ... | 9
+
+This is left recursive, and multiplication has a higher precident than addition.
+
+
+
+Problem 6 Answer:
+<main> := <parse>
+<parse> := <command>
+<command> := <expr>
+<expr> := <min> {+ <min>}
+<min> := <term> {- <term>}
+<term> := <factor> {* <factor>}
+<factor> := (<expr>) | <number>
+<number> := <digit> <digit>*
+<digit> := 0 | 1 | ... | 9
+
+
+
+Problem 7 Answer:
+1 + 2 - 2:
+<main>
+<parse>
+<command>
+<expr>
+<min> + <min>
+<term> + <min>
+<factor> + <min>
+<number> + <min>
+1 + <min>
+1 + <term> - <term>
+1 + <factor> - <term>
+1 + <number> - <term>
+1 + 2 - <term>
+1 + 2 - <factor>
+1 + 2 - <number>
+1 + 2 - 2
+
+2 - 3 * 5:
+<main>
+<parse>
+<command>
+<expr>
+<min> - <min>
+<term> - <min>
+<factor> - <min>
+<number> - <min>
+2 - <min>
+2 - <factor> * <factor>
+2 - <number> * <factor>
+2 - 3 * <factor>
+2 - 3 * <number>
+2 - 3 * 5
+
+10 - 5 + 2 - 3:
+<main>
+<parse>
+<command>
+<expr>
+<min> + <min>
+<term> - <term> + <min>
+<factor> - <term> + <min>
+<number> - <term> + <min>
+10 - <term> + <min>
+10 - <factor> + <min>
+10 - <number> + <min>
+10 - 5 + <min>
+10 - 5 + <term> - <term>
+10 - 5 + <factor> - <term>
+10 - 5 + <number> - <term>
+10 - 5 + 2 - <term>
+10 - 5 + 2 - <factor>
+10 - 5 + 2 - <number>
+10 - 5 + 2 - 3
+
+10 - 7 - 2:
+<main>
+<parse>
+<command>
+<expr>
+<min>
+<term> - <term> - <term>
+<factor> - <term> - <term>
+<number> - <term> - <term>
+10 - <term> - <term>
+10 - <factor> - <term>
+10 - <number> - <term>
+10 - 7 - <term>
+10 - 7 - <factor>
+10 - 7 - <number>
+10 - 7 - 2
+
+
+
+Problem 9 Answer:
+C identifiers: ^[A-Za-z_][\w]*
+Strings: "(?:\\"|[^"])*"
+Strings over {a,b} that have even # of b's: ^(a*)(a*ba*ba*)*$
+Strings over {a,b,c} that have odd # of c's: ^([ab]*c[ab]*)([ab]*c[ab]*c)*$
+
+
+
+Problem 10 Answer:
+1) These data types are to determine if a value is true or false. _Bool holds 0/1 and bool holds true/false, which macro to 1/0, respetively.
+2) _Bool and bool both exist because bool wasn't reserved for a time, but _Bool was. To keep backwards compatible, they have left both definitions into the language. bool is now a reserved keyword 
+3) bool is an alias for _Bool in the stdbool header, so provided an individual doesn't use bool as a variable or function name, they have the same exact meaning.
+Cite: https://stackoverflow.com/questions/8724349/difference-between-bool-and-bool-types-in-c
+
+
+
+Problem 11 Answer:
+Pragmas: pragmas are constructs that provide hints to the compiler. They are a sort of comment, so in some languages they can appear wherever a comment could normally be. Pragmas can modify the compiler to create alternative outputs, such as without optimization or debugging checks.
+
+Programs are processed by the scanner because they modify how the program should be compiled and allow for better executables to be formed. In addition, the grammars would be compilcated if pragmas could appear in any location, so for simplicity sake it makes sense to have them handled by the scanner, or to all be defined in one location.
+
+The benefits of providing pragmas are you allow the developer to specify certain parts of the code to use specific resources, speeding up the program. An example could be keeping a heavily used variable in a register, even if it could have been evicted for another variable. The drawbacks of pragmas are they can over-compilcate your compile process, breaking standard rules that the language implements, such as type checking, leading to undefined behaviors in the executables.
+
+
+Problem 12 Answer:
+z @ w + x @ y:    + @ x y @ z w
+w + x + y * z:    + + w x * y z
+w * x / y @ z:    / * w x @ y z
+w / x / y * z:    * / / w x y z
+
+
+Problem 13 Answer:
+z @ w + x @ y:    z w @ x y @ +
+w + x + y * z:    w x y z * + +
+w * x / y @ z:    y z @ w x * /
+w / x / y * z:    z y w x / / *

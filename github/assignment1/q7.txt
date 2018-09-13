@@ -1,0 +1,4 @@
+a) ack(1,0) = ack(0,1) = 1+1 = 2
+b) ack(0,3) = 3+1 = 4
+c) Implemented in ack.c; ack(0,3) returns 4. ack(3,20) just hangs while it keeps recursively trying, eventually segfaulting.
+d) Implemeneted in ack.py; ack(0,3) returns 4. ack(3,20) causes a RecursionError to appear, almost instantly, killing the program.

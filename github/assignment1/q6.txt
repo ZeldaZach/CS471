@@ -1,0 +1,8 @@
+True or False. Some programming languages are more "powerful" then others.  Explain your answer.
+
+We need to first state assumptions:
+A language is "powerful" if it is able to solve a challenge with reasonable memory and time complexity. Every language has their strong points, whether it be JavaScript and the responsive front end elements, or C++ backend for network connections, to Java with its ability to compile once and run anywhere.
+
+The answer to this question is FALSE. Every language has its strong points, and any Turing-complete language can be used to solve a challenge. Some languages are able to solve the challenge quicker, while others are a little bit more verbose in their approach and memory usage.
+
+The only non-Turing complete language I can think of is HTML. I can concede that most other languages have a more suitable purpose in daily life, but HTML still has a role in rendering webpages and giving browsers the task of solving the missing tag issues. Reiterating, each language has its use cases and should not be consider more "powerful" than any other.
