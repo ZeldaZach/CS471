@@ -1,12 +1,11 @@
-/* Homework Assignment 4 - Prolog 2
+/* Zachary Halpern
+   Homework Assignment 4 - Prolog 2
    Programming Languages
    CS471, Fall 2018
-   Binghamton University */
-
-/* Instructions */
+   Binghamton University
+*/
 
 /* 
-
 After you change the filename to 'hw4F18.pl', You will be able to code
 in and run this file in the Prolog interpreter directly.
 
@@ -36,19 +35,16 @@ If any of the tests do not pass, you will get a warning.
 If you pass the tests there is a good chance that your code
 is correct, but not guaranteed; the tests are meant as guided feedback
 and are not a check for 100% correctness.
+*/
 
 /* Submission */
 
 /* For this assignment -- and the remaining Prolog assignments -- your
 submission should only include this source file -- there is no need
 to add an additional text file with answers. Please tar and gzip
-this file as normal with a name like eway1_hw4.tar.gz. */
+this file as normal with a name like eway1_hw4.tar.gz.
 
-/* Homework 4 */
-
-/* Due: Tuesday, 9/18 at 11:59 PM */
-
-/* Purpose: To get comfortable with backtracking, recursion,
+Purpose: To get comfortable with backtracking, recursion,
    become familar with reflective mechanism of Prolog,
    and Prolog as a symbolic programming language.
 */
@@ -82,7 +78,6 @@ query 'nodebug'.
 If you prefer a graphical debugger/trace, enter the query 'manpce.' . You will
 see a small XPCE manual window. Under the 'Tools' menu select: "Prolog
 graphical tracer".
-
 */
 
 /* Problem 0B (NOT GRADED):
@@ -117,7 +112,15 @@ graphical tracer".
 
    (Please write your answer in a comment in the next section.)
 */
+
 /* Problem 1 Answer: */
+/*
+A) Relation: Collection of ordered pairs that have one object from each set.
+B) Function: 
+C) A function is a type of relation, so all functions are relations.
+D) Relations can have one object in a set to be related to more than one in the second set, so a relation is not necessarily a function. Ex: f(x) = x*x. This has the same output for both x = 1 and x = -1.
+*/
+
 
 /* Problem 2:
    Define homoiconic.
@@ -130,8 +133,15 @@ graphical tracer".
 */
 
 /* Problem 2 Answer: */
+/*
+A) Homoiconic: Programs that are built to look like normal data structures and can be modified dynamically. 
+B) Prolog is indeed homoiconic because it represents itself and can modify itself. AN example is how Prolog can add additional clauses to its own database with assert and retract. 
+C) A language is fully reflective if it can inspect all aspects of its structure and current state in execution. Most languages are not fully reflective.
+D) Prolog is not fully reflective, but it is reflective in some ways. Given the functor and arity of a goal, clause predicate can find all relations within the database.
+*/
 
-/* Problem 3
+
+/* Problem 3:
 Write a predicate insert_at(X,Y,N,Z) that succeeds if Z is the list Y with X 
 inserted at index N -- Insert X at index N in Y.
 
@@ -139,13 +149,31 @@ NOTE: Don't worry about the error cases: i.e, N greater than the length of Y.
 */
 
 /* Problem 3 Answer: */
+insert_at(_, [], _, []).
+
+insert_at(X, [Yh | Yt], N, [Zh | Zt]) :-
+	N > 0,
+	Nnew is N - 1,
+	Zh = Yh,
+	insert_at(X, Yt, Nnew, Zt).
+
+insert_at(X, Y, N, [Zh | Zt]) :-
+	N = 0,
+	Nnew is N - 1,
+	X = Zh,
+	insert_at(X, Y, Nnew, Zt).
+
+insert_at(X, [Yh | Yt], N, [Zh | Zt]) :-
+	N < 0,
+	Zh = Yh,
+	insert_at(X, Yt, N, Zt).
 
 /* Problem 3 Test: */
-%:- insert_at(3,[1,2,3],2,[1,2,3,3]).  % SUCCEED
-%:- insert_at(1,[1,2,3],0,[1,1,2,3]).  % SUCCEED
-%:- insert_at(a,[1,2,3],1,[1,a,2,3]).  % SUCCEED
+:- insert_at(3,[1,2,3],2,[1,2,3,3]).  % SUCCEED
+:- insert_at(1,[1,2,3],0,[1,1,2,3]).  % SUCCEED
+:- insert_at(a,[1,2,3],1,[1,a,2,3]).  % SUCCEED
 
-%:- insert_at(1,[1,2,3],0,[1,2,3])-> fail ; true.    % FAIL
+:- insert_at(1,[1,2,3],0,[1,2,3])-> fail ; true.    % FAIL
 
 
 /* Problem 4:
@@ -155,18 +183,35 @@ order.  Items do not need to be unique.
 
 For example:
 merge([10,3,2], [11,5,2], M) should give M =[11,10,5,3,2,2].
-
 */
 
 /* Problem 4 Answer: */
+merge([], [], _).
+
+merge([Xh | Xt], [], [Zh | Zt]) :-
+	Xh = Zh,
+	merge(Xt, [], Zt).
+
+merge([], [Yh | Yt], [Zh | Zt]) :-
+	Yh = Zh,
+	merge([], Yt, Zt).
+
+merge([Xh | Xt], [Yh | Yt], [Zh | Zt]) :-
+	Xh < Yh,
+	Zh = Yh,
+	merge([Xh | Xt], Yt, Zt).
+
+merge([Xh | Xt], [Yh | Yt], [Zh | Zt]) :-
+	Xh >= Yh,
+	Zh = Xh,
+	merge(Xt, [Yh | Yt], Zt).
 
 /* Problem 4 Test: */
-%:- merge([10,3,2],[11,5,2],[11,10,5,3,2,2]) .       % SUCCEED
-%:- merge([0],[],[0]).                               % SUCCEED
-%:- merge([],[3],[3]).                               % SUCCEED
+:- merge([10,3,2],[11,5,2],[11,10,5,3,2,2]) .       % SUCCEED
+:- merge([0],[],[0]).                               % SUCCEED
+:- merge([],[3],[3]).                               % SUCCEED
 
-%:- merge([4,3],[3],[3]) -> fail ; true.            % FAIL
-
+:- merge([4,3],[3],[3]) -> fail ; true.            % FAIL
 
 
 /* Problem 5:
@@ -179,19 +224,20 @@ merge([10,3,2], [11,5,2], M) should give M =[11,10,5,3,2,2].
 */
 
 /* Problem 5 Answer */
-
 prodlist([], 1).
 
-
+prodlist([H|T], M) :-
+	prodlist(T, Mminor),
+	M is H * Mminor.
 
 /* Problem 5 Test */
 /* There should be no warnings when compiling,
    tests which are supposed to fail are written as such */
 
-% :- prodlist([], 1).
-% :- prodlist([], 0) -> fail ; true.
-% :- prodlist([1,2,3,4],24).
-% :- prodlist([0], 0).
+ :- prodlist([], 1).
+ :- prodlist([], 0) -> fail ; true.
+ :- prodlist([1,2,3,4],24).
+ :- prodlist([0], 0).
 
 
 /* Problem 6:
@@ -210,16 +256,19 @@ prodlist([], 1).
 */
 
 /* Problem 6 Answer */
+prodlist2(List, Prod) :- prodlist2(List, 1, Prod).
 
-prodlist2(List,Prod) :- prodlist2(List, 1, Prod).
 prodlist2([], Prod, Prod).
+prodlist2([H|T], Hold, Prod) :-
+	NewHold is H * Hold,
+	prodlist2(T, NewHold, Prod).
 
 /* Problem 6 Test */
 
-% :- prodlist2([], 1).
-% :- prodlist2([], 0) -> fail ; true.
-% :- prodlist2([1,2,3,4], 24).
-% :- prodlist2([0], 0).
+:- prodlist2([], 1).
+:- prodlist2([], 0) -> fail ; true.
+:- prodlist2([1,2,3,4], 24).
+:- prodlist2([0], 0).
 
 
 /* Problem 7:
@@ -241,14 +290,17 @@ If BT = tree( leaf(1), tree( leaf(2),leaf(4)) ), then isBinaryTree(BT) succeeds.
 */
 
 /* Problem 7 Answer: */
+isBinaryTree(leaf(X)) :- number(X); atom(X).
+isBinaryTree(tree(X, Y)) :- isBinaryTree(X), isBinaryTree(Y).
 
 /* Problem 7 Test: */
-%:- isBinaryTree(leaf(1)).                                           %SUCCEED
-%:- isBinaryTree(tree(leaf(a),leaf(b))).                             %SUCCEED
-%:- BT = tree( leaf(b), tree( leaf(x),leaf(y)) ), isBinaryTree(BT).  %SUCCEED
-%:- BT = tree(tree(leaf(9), leaf(2)), tree(leaf(3), tree(leaf(3), leaf(1)))), isBinaryTree(BT). %SUCCEED
-%:- isBinaryTree( tree(leaf(1)) ) -> fail ; true.                    % FAIL
-%:- isBinaryTree( tree() )  -> fail ; true.                          % FAIL
+:- isBinaryTree(leaf(1)).                                           %SUCCEED
+:- isBinaryTree(tree(leaf(a),leaf(b))).                             %SUCCEED
+:- BT = tree( leaf(b), tree( leaf(x),leaf(y)) ), isBinaryTree(BT).  %SUCCEED
+:- BT = tree(tree(leaf(9), leaf(2)), tree(leaf(3), tree(leaf(3), leaf(1)))), isBinaryTree(BT). %SUCCEED
+:- isBinaryTree( tree(leaf(1)) ) -> fail ; true.                    % FAIL
+:- isBinaryTree( tree() )  -> fail ; true.                          % FAIL
+
 
 /* Problem 8:
 (Exercise 3.5 from Learn Prolog Now!)
@@ -261,12 +313,13 @@ T = tree( leaf(4), tree(leaf(2), leaf(1))).
 */
 
 /* Problem 8 Answer: */
-
+swap(leaf(X), leaf(X)).
+swap(tree(X, Y), tree(Yflip, Xflip)) :- swap(X, Xflip), swap(Y, Yflip).
 
 /* Problem 8 Test: */
-% :- swap( tree( tree(leaf(1), leaf(2)), leaf(4)), T), T  =  tree( leaf(4), tree(leaf(2), leaf(1))).  %SUCCEED
-% :- swap(leaf(1), leaf(1)).  %SUCCEED
-% :- swap(tree(leaf(1), leaf(2)), tree(leaf(1), leaf(2))) -> fail ; true.  % FAIL
+ :- swap( tree( tree(leaf(1), leaf(2)), leaf(4)), T), T  =  tree( leaf(4), tree(leaf(2), leaf(1))).  %SUCCEED
+ :- swap(leaf(1), leaf(1)).  %SUCCEED
+ :- swap(tree(leaf(1), leaf(2)), tree(leaf(1), leaf(2))) -> fail ; true.  % FAIL
 
 
 /* Problem 9:
@@ -279,12 +332,31 @@ T = tree( leaf(4), tree(leaf(2), leaf(1))).
 */
 
 /* Problem 9 Answer: */
+maxV(tree(leaf(A), leaf(B)), Max) :-
+	Max = A;
+	Max = B.
+
+maxV(tree(tree(A, B), leaf(C)), Max) :-
+	Max = C;
+	Max is maxV(A, Max);
+	Max is maxV(B, Max).
+
+maxV(tree(leaf(C), tree(A, B)), Max) :-
+	Max = C;
+	Max is maxV(A, Max);
+	Max is maxV(B, Max).
+
+maxV(tree(tree(A, B), tree(C, D)), Max) :-
+	maxV(A, Max);
+	maxV(B, Max);
+	maxV(C, Max);
+	maxV(D, Max).
+
+maxV(leaf(A), Max) :-
+	Max = A.
 
 /* Problem 9 Test: */
-% :- maxV( tree( tree(leaf(1), leaf(2)), leaf(4)), M), M=4.   %SUCCEED
-% :- BT = tree(tree(leaf(2), leaf(9)), tree(leaf(3), tree(leaf(4), leaf(1))), maxV(BT, M), M=9.  %SUCCEED
-% :- BT = tree(tree(leaf(3), leaf(2)), tree(leaf(5), tree(leaf(9), leaf(1))), maxV(BT, M), M=9.  %SUCCEED
-% :- maxV(tree(leaf(1), leaf(2)), 3) -> fail ; true.  % FAIL
-
-
-
+ :- maxV( tree( tree(leaf(1), leaf(2)), leaf(4)), M), M=4.   %SUCCEED
+ :- BT = tree(tree(leaf(2), leaf(9)), tree(leaf(3), tree(leaf(4), leaf(1)))), maxV(BT, M), M=9.  %SUCCEED
+ :- BT = tree(tree(leaf(3), leaf(2)), tree(leaf(5), tree(leaf(9), leaf(1)))), maxV(BT, M), M=9.  %SUCCEED
+ :- maxV(tree(leaf(1), leaf(2)), 3) -> fail ; true.  % FAIL
