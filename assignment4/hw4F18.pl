@@ -337,23 +337,31 @@ maxV(tree(leaf(A), leaf(B)), Max) :-
 	Max = B.
 
 maxV(tree(tree(A, B), leaf(C)), Max) :-
-	Max = C;
-	Max is maxV(A, Max);
-	Max is maxV(B, Max).
+	MaxA = maxV(A, Max),
+	MaxB = maxV(B, Max),
+	MaxAB is max(MaxA, MaxB),
+	MaxABC is max(MaxAB, C),
+	Max = MaxABC.
 
 maxV(tree(leaf(C), tree(A, B)), Max) :-
-	Max = C;
-	Max is maxV(A, Max);
-	Max is maxV(B, Max).
+	MaxA = maxV(A, Max),
+	MaxB = maxV(B, Max),
+	MaxAB is max(MaxA, MaxB),
+	MaxABC is max(MaxAB, C),
+	Max = MaxABC.
 
 maxV(tree(tree(A, B), tree(C, D)), Max) :-
-	maxV(A, Max);
-	maxV(B, Max);
-	maxV(C, Max);
-	maxV(D, Max).
+	MaxA = maxV(A, Max),
+	MaxB = maxV(B, Max),
+	MaxC = maxV(C, Max),
+	MaxD = maxV(D, Max),
+	MaxAB is max(MaxA, MaxB),
+	MaxCD is max(MaxC, MaxD),
+	MaxABCD is max(MaxAB, MaxCD),
+	Max is MaxABCD.
 
-maxV(leaf(A), Max) :-
-	Max = A.
+maxV(leaf(X), Max) :-
+	Max = X.
 
 /* Problem 9 Test: */
  :- maxV( tree( tree(leaf(1), leaf(2)), leaf(4)), M), M=4.   %SUCCEED
