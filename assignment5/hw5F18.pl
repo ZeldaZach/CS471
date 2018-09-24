@@ -1,14 +1,12 @@
-
-/* Homework Assignment 5 - Prolog 3
+/* Zachary Halpern
+   Homework Assignment 5 - Prolog 3
    Programming Languages
    CS471, Fall 2018
    Binghamton University */
 
 /* Instructions */
 
-/* 
-
-After you change the filename to 'hw5F18.pl', You will be able to code
+/* After you change the filename to 'hw5F18.pl', You will be able to code
 in and run this file in the Prolog interpreter directly.
 
 We will be using swipl for our Prolog environment: To load/reload this file,
@@ -79,10 +77,9 @@ this file as normal with a name like eway1_hw5.tar.gz. */
 ?- X is pi.
 ?- cos(pi,X).
 ?- X is cos(pi).
-
 */
 
-/*   Problem 0B (NOT GRADED):
+/* Problem 0B (NOT GRADED):
  We will encode a mini-AST in Prolog using complex data structures. 
  A "node" will consist of either a ast(Functor,LeftExpr,RightExpr), 
  ast(Functor,Expr) or ast(Number).  Note a Number can be a number, pi or e.
@@ -111,7 +108,7 @@ this file as normal with a name like eway1_hw5.tar.gz. */
                     )
 
  Draw the AST for the following encoding:
-    ast(+, ast('*', ast(min, ast('-' ast(-3)), ast(4)), ast(2)), ast(10) ) 
+    ast(+, ast('*', ast(min, ast('-', ast(-3)), ast(4)), ast(2)), ast(10) ) 
 */
 
 /* Problem 1:
@@ -128,15 +125,18 @@ this file as normal with a name like eway1_hw5.tar.gz. */
    This problem can be solved in 2 clauses.
 */
 
-
 /* Problem 1 Answer */
+prodPartialR(1, [1]).
+prodPartialR(N, [H1, H2 | T]) :-
+	Nnew is N - 1,
+	prodPartialR(Nnew, [H2 | T]),
+	H1 is N * H2.
 
 /* Problem 1 Test */
-
-% :- prodPartialR(1, [1]).
-% :- prodPartialR(1, []) -> fail ; true.
-% :- prodPartialR(3, [6, 2, 1]).
-% :- prodPartialR(5, [120, 24, 6, 2, 1]).
+ :- prodPartialR(1, [1]).
+ :- prodPartialR(1, []) -> fail ; true.
+ :- prodPartialR(3, [6, 2, 1]).
+ :- prodPartialR(5, [120, 24, 6, 2, 1]).
 
 
 /* Problem 2:
@@ -155,17 +155,25 @@ this file as normal with a name like eway1_hw5.tar.gz. */
 
        prodPartialL(N,Lst):-prodPartialL(N,N,Lst).
 
-   You need to add 2 additional clauses.*/
+   You need to add 2 additional clauses.
+*/
 
 /* Problem 2 Answer */
+prodPartialL(N, List) :-
+	prodPartialL(N, N, List).
 
+prodPartialL(1, Prior, [Prior]).
+
+prodPartialL(N, Prior, [H1, H2 | T]) :-
+	Nnew is N - 1,
+	H1 = Prior,
+	NewPrior is Nnew * H1,
+	prodPartialL(Nnew, NewPrior, [H2 | T]).
 
 /* Problem 2  Test */
-
-% :- prodPartialL(1, [1]).
-% :- prodPartialL(1, []) -> fail ; true.
-% :- prodPartialL(5, [5, 20, 60, 120, 120]).
-
+:- prodPartialL(1, [1]).
+:- prodPartialL(1, []) -> fail ; true.
+:- prodPartialL(5, [5, 20, 60, 120, 120]).
 
 
 /* Problem 3:
@@ -175,15 +183,17 @@ this file as normal with a name like eway1_hw5.tar.gz. */
 */
 
 /* Problem 3 Answer: */
+computeS(Op, Arg1, Arg2, Result) :-
+	T =.. [Op, Arg1, Arg2],
+	Result is T.
 
 /* Problem 3 Test: */
-% :- computeS(-, 19, 7, 12).
-% :- computeS(div, 19, 7, 2).
-% :- computeS(div, 19, 7, R), R = 2.
+:- computeS(-, 19, 7, 12).
+:- computeS(div, 19, 7, 2).
+:- computeS(div, 19, 7, R), R = 2.
 
-% :- computeS(/, 19, 7, 2) -> fail ; true.
-% :- catch((computeS(sin, 90, 1, _), fail), error(_Err, _Context), true).
-
+:- computeS(/, 19, 7, 2) -> fail ; true.
+:- catch((computeS(sin, 90, 1, _), fail), error(_Err, _Context), true).
 
 
 /* Problem 4:
@@ -194,14 +204,18 @@ this file as normal with a name like eway1_hw5.tar.gz. */
 */
 
 /* Problem 4 Answer: */
+result([], []).
+
+result([He | Te], [Ha | Ta]) :-
+	Ha is He,
+	result(Te, Ta).
 
 /* Problem 4 Test */
-% :- result([],[]).
-% :- result([+(3,7), mod(104,7),-(5)],[10, 6, -5]).
-% :- result([+(3,7), +(15, -(3,11))],X), X = [10, 7].
+ :- result([],[]).
+ :- result([+(3,7), mod(104,7),-(5)],[10, 6, -5]).
+ :- result([+(3,7), +(15, -(3,11))],X), X = [10, 7].
 
-% :- result([+(3,7), mod(104,7)],[10,13]) -> fail ; true.
-
+ :- result([+(3,7), mod(104,7)],[10,13]) -> fail ; true.
 
 
 /* Problem 5:
@@ -224,16 +238,46 @@ this file as normal with a name like eway1_hw5.tar.gz. */
 */
 
 /* Problem 5 Answer: */
+d(x, x, 1).
+d(C, x, 0) :- number(C).
+d(C, x, R) :- 
+	C =.. [Op, Num, Sym | _],
+	Op = '*',
+	Sym = x,
+	R = Num.
+
+/*
+
+?- help(arg).
+?- arg(3, foo(a,b,c),A).
+?- help('=..').
+?- T =.. [foo,x, y, z].
+?- E =.. ['+',2,3], R is E.
+?- foo(who, what) =.. T.
+?- foo(who, what) =.. [A, B,C].
+?- X =.. [+,2,3], Y is X.
+?- S = 19, V = 3, C is S div V.
+?- S = 19, V = 3, C is S // V.
+?- S = 19, V = 3, C is S / V.
+?- A = zzz, atom(A).
+?- N = 23, number(N).
+?- A = 12, atom(A).
+?- X is pi.
+?- cos(pi,X).
+?- X is cos(pi).*/
+
 
 /* Problem 5 Test: */
-% :- d(x,x,R), R = 1 .
-% :- d(7*x,x,R), R = 7 .
-% :- d(x +2*(x^3 + x*x),x,Result), Result = 1+ (2* (3*x^2*1+ (x*1+x*1))+ (x^3+x*x)*0) .
+:- d(x,x,R), R = 1 .
+:- d(7,x,R), R = 0 .
+:- d(7*x,x,R), R = 7 .
+%:- d(x +2*(x^3 + x*x),x,Result), Result = 1+ (2* (3*x^2*1+ (x*1+x*1))+ (x^3+x*x)*0) .
 % :- d(-(1.24*x -x^3),x,Result), Result = - (1.24-3*x^2*1) .
 % :- d(-(1.24*x -2*x^3),x,Result), Result = - (1.24- (2* (3*x^2*1)+x^3*0)) .
 
 % Pay careful attention to why this fails.
 % :- d(x +2*(x^3 + x*x),x,Result), Result = 1+ (2* (3*x^(3-1)*1+ (x*1+x*1))+ (x^3+x*x)*0) -> fail ; true.
+
 
 /* Problem 6:
 Write a predicate change/2 that given the change amount, computes the way in which 
@@ -242,9 +286,9 @@ exact change can be given. Use the following USA's coin facts at your solution. 
 coin(dollar, 100).
 coin(half, 50).
 coin(quarter, 25).
-coin(dime,10).
-coin(nickel,5).
-coin(penny,1).
+coin(dime, 10).
+coin(nickel, 5).
+coin(penny, 1).
 
 /* The predicate change(S,CL) succeeds if given a positive integer S, CL is a 
    list of tuples that contains the name of the coin and the number of coins 
@@ -264,15 +308,57 @@ http://condor.depaul.edu/~rjohnson/algorithm/coins.pdf has a nice discussion.
 Think about (no need to turn in)
    1) How could we generalize this problem to handle coins from other currencies?
    2) What are the different techniques to find the change with the fewest number of coins ?
-   3) What happens if the order of the "coin" facts change?  */
+   3) What happens if the order of the "coin" facts change?
+*/
 
 /* Problem 6 Answer: */
+change(Total, Tuple) :-
+	Total >= 100,
+	TotalOfCoin is Total // 100,
+	NewTotal is Total - 100 * TotalOfCoin,
+	change(NewTotal, RestOfTuple),
+	Tuple = [(dollar, TotalOfCoin) | RestOfTuple].
+
+change(Total, Tuple) :-
+	Total >= 50,
+	TotalOfCoin is Total // 50,
+	NewTotal is Total - 50 * TotalOfCoin,
+	change(NewTotal, RestOfTuple),
+	Tuple = [(half, TotalOfCoin) | RestOfTuple].
+
+change(Total, Tuple) :-
+	Total >= 25,
+	TotalOfCoin is Total // 25,
+	NewTotal is Total - 25 * TotalOfCoin,
+	change(NewTotal, RestOfTuple),
+	Tuple = [(quarter, TotalOfCoin) | RestOfTuple].
+
+change(Total, Tuple) :-
+	Total >= 10,
+	TotalOfCoin is Total // 10,
+	NewTotal is Total - 10 * TotalOfCoin,
+	change(NewTotal, RestOfTuple),
+	Tuple = [(dime, TotalOfCoin) | RestOfTuple].
+
+change(Total, Tuple) :-
+	Total >= 5,
+	TotalOfCoin is Total // 5,
+	NewTotal is Total - 5 * TotalOfCoin,
+	change(NewTotal, RestOfTuple),
+	Tuple = [(nickel, TotalOfCoin) | RestOfTuple].
+
+change(Total, Tuple) :-
+	Total >= 1,
+	Tuple = [(penny, Total)].
+
+change(Total, []) :- Total = 0.
 
 /* Problem 6 Tests: */
-%:- change(168,C), C = [ (dollar, 1), (half, 1), (dime, 1), (nickel, 1), (penny, 3)] .  %SUCCEED
-%:- change(75,C),  C = [ (half, 1), (quarter, 1)] .                                     %SUCCEED
+:- change(168,C), C = [ (dollar, 1), (half, 1), (dime, 1), (nickel, 1), (penny, 3)] .  %SUCCEED
+:- change(75,C),  C = [ (half, 1), (quarter, 1)] .                                     %SUCCEED
 
-%:- (change(75,C), C = [(half, 2)]) -> fail ; true.             %FAIL
+:- (change(75,C), C = [(half, 2)]) -> fail ; true.             %FAIL
+
 
 /* Problem 7:
  We will encode a mini-AST in Prolog using complex data structures. 
@@ -287,17 +373,29 @@ Think about (no need to turn in)
  functor supplied in the nodes. */
 
 /* Problem 7 Answer: */
+run(ast(Functor, LeftExpr, RightExpr), Result) :-
+	run(LeftExpr, LEResult),
+	run(RightExpr, REResult),
+	Total =.. [Functor, LEResult, REResult],
+	Result is Total.
+
+run(ast(Functor, Expr), Result) :-
+	run(Expr, EResult),
+	Total =.. [Functor, EResult],
+	Result is Total.
+
+run(ast(Number), Result) :-
+	Number = Result. 
 
 /* Problem 7 Tests: */
+:- run(ast(float, ast(sin, ast('/', ast(pi), ast(2))) ),E), E = 1.0. %SUCCEED
+:- run(ast(+,ast(*,ast(2),ast(3)),ast(random,ast(5))),_).   %SUCCEED
+:- run(ast(+,ast(*,ast(2),ast(3)),ast(3)),E), E=9.   %SUCCEED
+:- run(ast(+,ast(*,ast(2),ast(3)),ast(-,ast(6),ast(3))),E), E=9.   %SUCCEED
+:- run(ast(2),E), E=2.   %SUCCEED
+:- run(ast(abs,ast(-2)),E), E=2.   %SUCCEED
 
-%:- run(ast(float, ast(sin, ast('/', ast(pi), ast(2))) ),E), E = 1.0. %SUCCEED
-%:- run(ast(+,ast(*,ast(2),ast(3)),ast(random,ast(5))),_).   %SUCCEED
-%:- run(ast(+,ast(*,ast(2),ast(3)),ast(3)),E), E=9.   %SUCCEED
-%:- run(ast(+,ast(*,ast(2),ast(3)),ast(-,ast(6),ast(3))),E), E=9.   %SUCCEED
-%:- run(ast(2),E), E=2.   %SUCCEED
-%:- run(ast(abs,ast(-2)),E), E=2.   %SUCCEED
-
-%:- (run(ast(+,ast(*,ast(2),ast(3)),ast(-,ast(6),ast(3))),E), E=8) -> fail ; true.  %FAILS
+:- (run(ast(+,ast(*,ast(2),ast(3)),ast(-,ast(6),ast(3))),E), E=8) -> fail ; true.  %FAILS
 
 
 /* Problem 8:
@@ -306,6 +404,7 @@ Think about (no need to turn in)
  occur in AST are collected into BPlst.  Use an inorder traversal of AST.  */
 
 /* Problem 8 Answer: */
+
 
 /* Problem 8 Tests: */
 %:- T = ast(+,ast(*,ast(2),ast(3)),ast(random,ast(5))), binaryAP(T,L), L = [*, +].  %SUCCEED
@@ -328,16 +427,22 @@ Think about (no need to turn in)
 
    Think What NOT how.  */
 
-/* Problem 9 Answer: */
+ /* Problem 9 Answer: */
+ numAtoms([H | T], Sum) :-
+    numAtoms(H, HSubSum),
+    numAtoms(T, TSubSum),
+    Sum is HSubSum + TSubSum.
+ 
+ numAtoms([], 0).
+ numAtoms(Atom, 1) :- atom(Atom).
 
 /* Problem 9 Tests: */
-% :- numAtoms([[r,ss,[a,b,c]],[a,b,c],[],[s,t,a,b]],12).
-% :- numAtoms([[r,ss,[a,b,c]],[a,b,c],[],[s,t,a,b]],19) -> fail ; true.
-% :- numAtoms([[r,ss,[a,b,c]],[a,b,c],[],[s,t,a,b]],10) -> fail ; true.
-% :- numAtoms([[r,ss,[a,b,c]],[a,b,c],[],[s,t,[[]],b]],11).
-% :- numAtoms([r], 1).
-% :- numAtoms([r], 3) -> fail ; true.
-% :- numAtoms([[[r]]], 1).
+:- numAtoms([[r,ss,[a,b,c]],[a,b,c],[],[s,t,a,b]],12).
+:- numAtoms([[r,ss,[a,b,c]],[a,b,c],[],[s,t,a,b]],19) -> fail ; true.
+:- numAtoms([[r,ss,[a,b,c]],[a,b,c],[],[s,t,a,b]],10) -> fail ; true.
+:- numAtoms([[r,ss,[a,b,c]],[a,b,c],[],[s,t,[[]],b]],11).
+:- numAtoms([r], 1).
+:- numAtoms([r], 3) -> fail ; true.
+:- numAtoms([[[r]]], 1).
 
-
-
+# TODO: 4 & 7
