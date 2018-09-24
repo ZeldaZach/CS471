@@ -239,44 +239,51 @@ result([He | Te], [Ha | Ta]) :-
 
 /* Problem 5 Answer: */
 d(x, x, 1).
+
 d(C, x, 0) :- number(C).
+
 d(C, x, R) :- 
-	C =.. [Op, Num, Sym | _],
+	C =.. [Op, Num, Sym],
 	Op = '*',
 	Sym = x,
 	R = Num.
 
-/*
+d(C, x, R) :-
+	C =.. [Op, Func],
+	d(Func, x, NewR),
+	R =.. [Op, NewR].
 
-?- help(arg).
-?- arg(3, foo(a,b,c),A).
-?- help('=..').
-?- T =.. [foo,x, y, z].
-?- E =.. ['+',2,3], R is E.
-?- foo(who, what) =.. T.
-?- foo(who, what) =.. [A, B,C].
-?- X =.. [+,2,3], Y is X.
-?- S = 19, V = 3, C is S div V.
-?- S = 19, V = 3, C is S // V.
-?- S = 19, V = 3, C is S / V.
-?- A = zzz, atom(A).
-?- N = 23, number(N).
-?- A = 12, atom(A).
-?- X is pi.
-?- cos(pi,X).
-?- X is cos(pi).*/
+d(C, x, R) :-
+	C =.. [Op, Arg1, Arg2],
+	(Op = '+'; Op = '-'),
+	d(Arg1, x, A1Result),
+	d(Arg2, x, A2Result),
+	R =.. [Op, A1Result, A2Result].
 
+d(C, x, R) :-
+	C =.. [Op, U, V],
+	Op = '*',
+	d(V, x, DV),
+	d(U, x, DU),
+	R = U * DV + V * DU.
+
+d(C, x, R) :-
+	C =.. [Op, U, N],
+	Op = '^',
+	Nnew is N-1,
+	d(U, x, DU),
+	R = N * U ^ (Nnew) * DU.
 
 /* Problem 5 Test: */
 :- d(x,x,R), R = 1 .
 :- d(7,x,R), R = 0 .
 :- d(7*x,x,R), R = 7 .
-%:- d(x +2*(x^3 + x*x),x,Result), Result = 1+ (2* (3*x^2*1+ (x*1+x*1))+ (x^3+x*x)*0) .
-% :- d(-(1.24*x -x^3),x,Result), Result = - (1.24-3*x^2*1) .
-% :- d(-(1.24*x -2*x^3),x,Result), Result = - (1.24- (2* (3*x^2*1)+x^3*0)) .
+:- d(x +2*(x^3 + x*x),x,Result), Result = 1+ (2* (3*x^2*1+ (x*1+x*1))+ (x^3+x*x)*0) .
+:- d(-(1.24*x -x^3),x,Result), Result = - (1.24-3*x^2*1) .
+:- d(-(1.24*x -2*x^3),x,Result), Result = - (1.24- (2* (3*x^2*1)+x^3*0)) .
 
 % Pay careful attention to why this fails.
-% :- d(x +2*(x^3 + x*x),x,Result), Result = 1+ (2* (3*x^(3-1)*1+ (x*1+x*1))+ (x^3+x*x)*0) -> fail ; true.
+:- d(x +2*(x^3 + x*x),x,Result), Result = 1+ (2* (3*x^(3-1)*1+ (x*1+x*1))+ (x^3+x*x)*0) -> fail ; true.
 
 
 /* Problem 6:
@@ -404,15 +411,23 @@ run(ast(Number), Result) :-
  occur in AST are collected into BPlst.  Use an inorder traversal of AST.  */
 
 /* Problem 8 Answer: */
+binaryAP(ast(Functor, LeftExpr, RightExpr), Oplist) :-
+	binaryAP(LeftExpr, LEResult),
+	binaryAP(RightExpr, REResult),
+	append(LEResult, [Functor], TempList),
+	append(TempList, REResult, Oplist).
+
+binaryAP(ast(_, Expr), Oplist) :- binaryAP(Expr, Oplist).
+
+binaryAP(ast(Number), []) :- number(Number).
 
 
 /* Problem 8 Tests: */
-%:- T = ast(+,ast(*,ast(2),ast(3)),ast(random,ast(5))), binaryAP(T,L), L = [*, +].  %SUCCEED
-%:- T = ast(+, ast(*, ast(2), ast(3)), ast(-,ast(3), ast(5))),  binaryAP(T,L), L = [*, +, -]. %SUCCEED
-%:- T = ast(+, ast(*, ast(2),  ast(-,ast(3), ast(//, ast(2), ast(5)))),ast(9)) ,  binaryAP(T,L), L = [*, -, //, +]. %SUCCEED
+:- T = ast(+,ast(*,ast(2),ast(3)),ast(random,ast(5))), binaryAP(T,L), L = [*, +].  %SUCCEED
+:- T = ast(+, ast(*, ast(2), ast(3)), ast(-,ast(3), ast(5))),  binaryAP(T,L), L = [*, +, -]. %SUCCEED
+:- T = ast(+, ast(*, ast(2),  ast(-,ast(3), ast(//, ast(2), ast(5)))),ast(9)) ,  binaryAP(T,L), L = [*, -, //, +]. %SUCCEED
 
-%:- (T = ast(+,ast(*,ast(2),ast(3)),ast(random,nn(5))), binaryAP(T,L), L = [+,*]) -> fail ; true.      %FAIL
-%
+:- (T = ast(+,ast(*,ast(2),ast(3)),ast(random,nn(5))), binaryAP(T,L), L = [+,*]) -> fail ; true.      %FAIL
 
 
 /* Problem 9:
@@ -444,5 +459,3 @@ run(ast(Number), Result) :-
 :- numAtoms([r], 1).
 :- numAtoms([r], 3) -> fail ; true.
 :- numAtoms([[[r]]], 1).
-
-# TODO: 4 & 7
