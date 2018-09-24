@@ -111,6 +111,7 @@ this file as normal with a name like eway1_hw5.tar.gz. */
     ast(+, ast('*', ast(min, ast('-', ast(-3)), ast(4)), ast(2)), ast(10) ) 
 */
 
+
 /* Problem 1:
    Write the predicate prodPartialR(N, ProdLst), which succeeds as follows:
    given a number N, ProdLst is a sequence of prods such that first number in
@@ -421,7 +422,6 @@ binaryAP(ast(_, Expr), Oplist) :- binaryAP(Expr, Oplist).
 
 binaryAP(ast(Number), []) :- number(Number).
 
-
 /* Problem 8 Tests: */
 :- T = ast(+,ast(*,ast(2),ast(3)),ast(random,ast(5))), binaryAP(T,L), L = [*, +].  %SUCCEED
 :- T = ast(+, ast(*, ast(2), ast(3)), ast(-,ast(3), ast(5))),  binaryAP(T,L), L = [*, +, -]. %SUCCEED
@@ -442,14 +442,14 @@ binaryAP(ast(Number), []) :- number(Number).
 
    Think What NOT how.  */
 
- /* Problem 9 Answer: */
- numAtoms([H | T], Sum) :-
-    numAtoms(H, HSubSum),
-    numAtoms(T, TSubSum),
-    Sum is HSubSum + TSubSum.
+/* Problem 9 Answer: */
+numAtoms([H | T], Sum) :-
+   numAtoms(H, HSubSum),
+   numAtoms(T, TSubSum),
+   Sum is HSubSum + TSubSum.
  
- numAtoms([], 0).
- numAtoms(Atom, 1) :- atom(Atom).
+numAtoms([], 0).
+numAtoms(Atom, 1) :- atom(Atom).
 
 /* Problem 9 Tests: */
 :- numAtoms([[r,ss,[a,b,c]],[a,b,c],[],[s,t,a,b]],12).
