@@ -1,0 +1,30 @@
+Zachary Halpern
+Peter Golden
+Jack ____
+
+1) Page 167 Ex. 3.1 Binding time for each:
+a. number of built in functions (math, type queries, etc):  Language Design time
+b. variable declaration corresponding to a certain variable reference/use: Program writing time
+c. max length allowed for a string literal: Language Implementation time
+d. referencing environment for a subroutine passed as a parameter: Run time		
+e. address of a particular library subroutine:	Load time
+f. total amount of space occupied by program code and data: Load time (if program doesn't  create new objects conditionally), run time (if it does) 
+
+2)
+
+3)
+
+4)
+
+5)
+
+6) Page 124 CYU #4
+The difference between the lifetime of a name-to-object binding and its visibility is that its lifetime encapsulates all the time between the binding's creation and estruction, while its visibility describes whether or not that certain binding will be used. For instance, if a global and local variable share the same name, within the local variable's scope, the global variable's binding is invisible and cannot be accessed.
+
+Page 135 CYU #12
+The scope of a name-to-object binding refers to the section of code in which that binding is visible.
+
+Page 167 Ex. 3.4
+1. When a subroutine is called with a local variable with the same name
+2. variables declared in a code block (for/while loops, conditionals, simple code blocks with {}) with identical names as other variables
+3. local variables with the same name as global variables
