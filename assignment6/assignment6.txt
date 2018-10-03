@@ -10,9 +10,45 @@ d. referencing environment for a subroutine passed as a parameter: Run time
 e. address of a particular library subroutine:	Load time
 f. total amount of space occupied by program code and data: Load time (if program doesn't  create new objects conditionally), run time (if it does) 
 
-2)
+2a) 
+Ex: powF(3, 2).
 
-3)
+HIGH ADDRESSES (0xFFFFFF)
+[powF(3, 2) -- Subroutine A]
+[Return Address of first call]
+<bookkeeping>
+[arg1 (3)]
+[arg2 (3)]
+[local retVal = 3*B]
+
+[powF(2, 2) -- Subroutine B]
+[Return Address of second call]
+<bookkeeping>
+[arg1 (2)]
+[arg2 (2)]
+[local retVal2 = 2*C]
+
+[powF(1, 2) -- Subroutine C]
+[Return Address of third call]
+<bookkeeping>
+[arg1 (1)]
+[arg2 (2)]
+[local retVal3 = 1*D]
+
+[powF(0, 2) -- Subroutine D]
+[Return Address of fourth call]
+<bookkeeping>
+[arg1 (0)]
+[arg2 (2)]
+[1]
+
+LOW ADDRESSES (0x000000)
+
+b) The program stack grows from higher addresses to lower addresses
+
+c) SEE ATTACHED powF.S FILE
+
+3) The recursive powF works a bit differently, instead calling a sub-routine and updating the stack in-place. The non-optimized code kept creating new subroutine calls whereas this implementation adds a simple for loop to the equation.
 
 4)
 
