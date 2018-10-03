@@ -1,6 +1,6 @@
 Zachary Halpern
 Peter Golden
-Jack ____
+Jack Burns
 
 1) Page 167 Ex. 3.1 Binding time for each:
 a. number of built in functions (math, type queries, etc):  Language Design time
