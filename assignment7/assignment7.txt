@@ -1,0 +1,114 @@
+Problem 1:
+Page 169 exercise 3.14
+static scoping will print "1 1 2 2"
+dynamic scoping will print "1 1 2 1"
+
+Problem 2:
+Page 172 Exercise 3.16
+this will print 5 and 7. 
+'c' needs to be stored dynamically because it needs to be referenced in the delegate function without being passed as an argument. 'a' is likely to be declared statically. 'b' and 'd' could be allocated dynamically or statically. 
+
+Problem 3:
+What are two principal tradeoff between reference counts and tracing strategy used in garbage collecting?
+One trade off is in the computational time it takes to perform. Incrementing and decrementing a some variable everytime a reference is coppied or lost is expensive. However, the reference complexity of the reference count model does not grow with your dynamic memory. The tracing strategy is less expensive per "iteration", but does asymptoticaly grow with the size of your dynamic memory.
+
+One other tradeoff is that with reference count (being eager), you can be certain when data that a reference points to is cleared. With tracing (being passive), you cannot be certain when data will be collected.
+
+Problem 4:
+Consider the following pseudo code:
+x : integer := 1
+y : integer := 20
+procedure add()
+     x := x + y
+procedure second(P : procedure)
+     x : integer := 2
+     P()
+procedure first()
+     y : integer := 3
+     second(add)
+
+first()
+write integer(x)
+
+A) What does this program print if the language uses static scoping?
+B) Explain why 4 is printed out if the language uses dynamic scoping with deep binding.
+C) Explain why 1 is printed out if the language uses dynamic scoping with shallow binding.
+
+A) The program will print out 21. The add function is the only function where x was not redefined. static scoping would mean that once x is redifined in procedure first, it loses access to the global x.
+B) In dynamic scoping with deep binding, the enviroment is bound to the function when it is passed as an argument. x = 1 and y = 3 when add() is passed to second(), so 4 is the final value.
+C) In dynamic scoping with shallow binding, function calls take the environment of the previous function call.  
+
+Problem 5:
+14.11 Nested named subroutines in Perl 5 must be implemented at compile time with no regards to the scope in which they were written. That way, any subroutine can be called from any scope, and all variables within any subroutine is visible to all those around it.
+
+Problem 6:
+14.13 The output of this code is 3, 3, and this would make sense because in the bar subroutine, first the parameter is printed out (which brings the first 3), and then y is changed to 3 before being printed out (bringing the second 3).
+
+When we comment out the y=2 line, we get an undefined variable/method error for y, which would make sense because it was never declared. The correct claim is that nested blocks act like nested loops in C or Java, where variables cannot be extracted up levels of scope; they could only be visible in the scope they were declared in, and any scope below that.
+
+Problem 7:
+6.1 No, these statements are not contradictory, because saying that the compilers are free to evaluate in whatever order they'd like does not imply that they’d evaluate them as left associative about half the time. Instead, compilers tend to evaluate arithmetic operators in the same way that the language’s designer(s) intended it to be, so that no ambiguity on evaluating operators is created when going from language designer to programmer to compiler.
+
+Problem 8:
+6.7 &(&i) would not make sense in C, because the unwary operator & returns where in memory a certain object is bound. Once you have that address, it would not make sense to ask “where in memory can you find this memory address ‘object’?”
+
+Problem 9:
+6.9 In Section 6.1.2 (“Orthogonality”), we noted that C uses = for assignment and == for equality testing. The language designers state: “Since assignment is about twice as frequent as equality testing in typical C programs, it’s appropriate that the operator be half as long” [KR88, p. 17]. What do you think of this rationale?
+
+The rational makes sense in the minds of a developer who is naieve wants to write as little code as possible. Being more verbose is sometimes beneficial because you are explicit in what you are trying to do. In other languages, you need to be explicit in assigment (:=) whereas in C you can mess up with an assignment operator in an if-statement and break the entire program without even knowing it. Simplicity is not always the right answer.
+
+Problem 10:
+int a = 0
+int b = (a++ && ++a) > (a++ && a++);	a = 0, b = ?
+int b = (0 && ++a) > (a++ && a++);		a = 1, b = ?
+int b = (0 && 2) > (a++ && a++);		a = 2, b = ?
+int b = (0) > (a++ && a++);				a = 2, b = ?
+int b = (0) > (2 && a++);				a = 3, b = ?
+int b = (0) > (2 && 3);					a = 4, b = ?
+int b = (0) > (1);						a = 4, b = ?
+int b = 0;								a = 4, b = 0
+
+int a = 0
+int b = (a++ && ++a) > (a++ && a++);	a = 0, b = ?
+int b = (a++ && ++a) > (a++ && 0);		a = 1, b = ?
+int b = (a++ && ++a) > (1 && 0);		a = 2, b = ?
+int b = (a++ && ++a) > (1 && 0);		a = 2, b = ?
+int b = (a++ && 3) > (1 && 0);			a = 3, b = ?
+int b = (3 && 3) > (1 && 0);			a = 4, b = ?
+int b = (1) > (1 && 0);					a = 4, b = ?
+int b = (1) > (0);						a = 4, b = ?
+int b = 1;								a = 4, b = 1
+
+Problem 11:
+i = 0
+while (a[i++] != 0);
+
+TEST:
+a[0] != 0
+a[1] != 0
+...
+a[n] != 0
+a[n+1] != 0
+
+for (i = 0; a[i] != 0; i++);
+a[0] != 0
+a[1] != 0
+...
+a[n] != 0
+
+These two loops are NOT equivalent. The while loop will still do the i increment after it checks if the condition is satisfied, whereas the for loop will only increment if the check passes. In the for loop, the check happens first, whereas in the while loop the check happens second. A small java example:
+class Main
+{
+	public static void main(String[] args)
+	{
+		int i;
+		int[] a = {1, 1, 1, 1, 0, 1, 1};
+
+		i = 0;
+		while (a[i++] != 0);
+		System.out.println(i); // Prints 5
+
+		for (i = 0; a[i] != 0; i++);
+		System.out.println(i); // Prints 4
+	}
+}

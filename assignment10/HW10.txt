@@ -1,0 +1,144 @@
+Zachary Halpern
+Peter Golden
+Jack Henry Burns
+
+1) Describe three common mechanisms for specifying the return value of a function. What are their relative strengths and drawbacks?
+
+Returning the value of the body. This had a problem with static scope rules, but was simplistic.
+Non-argument bearing return statements. The function ends with the call to the return statement, and execution to simplify the expression can be done. Drawbacks are based on the fact that nothing can be passed into the expression.
+Argument-bearing return statements. Similar to NABRS, but now arguments can be passed in (temporary variables). Drawbacks come from temps must be declared before usage and allocated. Returnstatement would then copy the content.
+
+
+2) What is the difference between a COROUTINE and a THREAD?
+
+Coroutines can only be executed one at a time, whereas threads are concurrent processing and can have multiple operations running at once. Threads are based on the operating system switching vs coroutines, where the developer and language help determine when to switch. A thread is easier to work with than a coroutine because threads do not need explicit transfer operations. Coroutines have little overhead compared to threads which has the scheduler overhead.
+
+3) Consider the following:	#define SQUARE(x) x*x	int squaref(int x) { return x * x; }	Given a = 3:
+3a) What is the result of squaref(a)? (Value semantics)
+squaref(a) => (a) * (a) => (3) * (3) => 9
+
+3b) what is the result of SQUARE(a)? (Macro expansion)
+SQURE(a) => a*a => 3*3 => 9
+
+3c) Give an example where squaref(x) and SQUARE(x) compute different values.
+a = 3+1
+SQUARE(a) => SQUARE(3+1) => 3+1*3+1 => 3+3+1 => 7
+squaref(a) => squaref(3+1) => squaref(4) => (4) * (4) => 16
+
+
+4) Given the following, what is the printout of runit() if params pass by:
+
+int A[3];
+int runit() {
+   i = 0;
+   A[0] = 2;
+   A[1] = 1;
+   A[2] = 0;
+   mys(i,a[i]);
+   print(i, a[0], a[1], a[2]);
+   mys(a[1],a[i]);
+   print(i, a[0], a[1], a[2]);
+   return 0;
+}
+
+void mys(int x, int y) {
+   x = x + y;
+   y = x - y;
+   x = x - y;
+}
+
+4a) Pass by value.
+// We call inner functions, which don't modify the global variable.
+0	2	1	0
+0	2	1	0
+
+4b) Pass by reference.
+// First call, we pass in i(0) and a[0](2)
+// i will now hold 0 + 2 => 2
+// a[0] will now hold 2 - 2 => 0
+// i will now hold 2 - 0 => 2
+2	0	1	0
+
+// Second call, we pass in a[1](1) and a[2](0)
+// a[1] will now hold 1 + 0 => 1
+// a[2] will now hold 1 - 0 => 1
+// a[1] will now hold 1 - 1 => 0
+2	0	0	1
+
+4c) Pass by value-result.
+// Uses in-out, and passes by value but will modify the original
+// First call, we pass in i(0) and a[0](2)
+// tmp i will now hold 0 + 2 => 2
+// tmp a[0] will now hold 2 - 2 => 0
+// tmp i will now hold 2 - 0 => 2
+// i = tmp i, a[0] = tmp a[0]
+2	0	1	0
+
+// Second call, we pass in a[1](1) and a[2](0)
+// tmp a[1] will now hold 1 + 0 => 1
+// tmp a[2] will now hold 1 - 0 => 1
+// tmp a[1] will now hold 1 - 1 => 0
+// a[1] = tmp a[1], a[2] = tmp a[2]
+2	0	0	1
+
+4d) Pass by macro expansion.
+// Assuming mys is now a macro
+// #define mys(i, a[i])		i = i+a[i]; a[i] = i - a[i]; i = i - a[i];
+mys(i, a[i]) => 
+	i = i + a[i];		// i = 0 + 2 = 2
+	a[i] = i - a[i];	// a[0] = 0 - 2 = -2
+	i = i - a[i];		// i = 0 - 2 = -2
+-2	-2	1	0
+
+mys(a[1], a[i]) =>
+	a[1] = a[1] + a[i];	// a[1] = 1 + ???
+	a[i] = a[1] - a[i]; // 
+	a[1] = a[1] - a[i];
+Index out of bounds, unnown results
+
+4e) Pass by name.
+// Similar to ref, but weird
+// First call, we pass in i(0) and a[0](2)
+// tmp x = 0
+// tmp x = 0 + 2 => 2
+// a[0] = 2 - 2 => 0
+// tmp x = 2 - 0 => 2
+// i = tmp x
+2	0	1	0
+
+// Second call, we pass in a[1](1) and a[2](0)
+// tmp x = 1 + 0 => 1
+// a[2] = 1 - 0 => 1
+// tmp x = 1 - 1 => 0
+// a[1] = tmp x
+2	0	0	1
+
+
+5) 10.24:
+Metaclasses in Smalltalk generate the actual class objects that will be doing all the work in object instantiation, method calling, etc; they are the actual orchestrators of code execution, while the classes they work on behalf of contain the instructions, data members, and everything else needed for the code to work.
+
+
+6) 10.33:
+The difference between the two is when the methods are bound; with redefining a method, the code to be used will be known and bound at compile time, but with overriding a method, the correct implementation needed is bound at runtime. 
+
+
+7) 10.42:
+Mix-in inheritance is a solution to multiple inheritance problems by changing how multiple inheritances are made. Instead of having multiple parents, each with their own methods to inherit from and use, these “parents” are defined as interfaces that children classes can “mix-in” for the purposes they need; instead of providing an implementation for all children to use, each child mixes in the interfaces they need to use, and provide their own implementations. In doing so, every child has only one true “parent,” and all the other interfaces provide the additional functionality needed. 
+
+10.45:
+True multiple inheritance allows derived classes to inherit code functionality already defined in the base classes; in mix-in inheritance, all methods not provided by the base class, and thus mixed in, are usually abstract and must have an implementation for every child that wants to use it. 
+
+
+8) Example 10.14
+C++'s nonvirtual functions allow you to have derived classes with the same function signature, and does not allow virtual dispatching.
+However, traditional overiding does not take place. Java's final keyword prevents derived classes from having the same function signatures.
+
+
+9) Example 10.16
+In this example, the derived class contains two b fields. I have been unable to reference both of them from the same variable name. I believe
+they should both be accessable through offsetting the object pointer with the location of the reference.
+
+
+10) Example 10.20
+An abstract class by definition cannot be implemented, thus declaring a variable of that type is forbidden. We can use a pointer to an abstract
+class, if we later assign its memory location with the value of a class derived from that abstract class. 

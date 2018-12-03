@@ -1,0 +1,65 @@
+Zachary Halpern
+Peter Golden
+Jack Burns
+
+1) Page 291 exercise 6.33
+Give an example in C in which an in-line subroutine may be significantly faster than a functionally equivalent macro. Give another example in which the macro is likely to be faster. (Hint: Think about applicative vs normal- order evaluation of arguments.)
+
+inline int funct(a, b) { return a + b * a - b; }
+#define funct(a, b) { int x = a + b * a - b; x; }
+cite: https://stackoverflow.com/questions/3532621/using-and-returning-output-in-c-macro
+inline should be faster if a and/or b are expressions instead of primitive ints.
+
+#define MAGIC_NUMBER_PI 3.14159
+inline float get_pi() { return 3.14159; }
+The define is quicker because it does a direct replacement at compile time compared to a function call at run time
+
+
+2) Page 311/12 CYU 2, 9, 10
+2a) 2. What does it mean for a language to be strongly typed? Statically typed? What prevents, say, C from being strongly typed?
+A language is strongly typed if it prohibits and enforces that operations on two different types will not occur. That is, the programmer cannot work around the restrictions of the language and must follow them. A language is statically typed if the language is strongly typed and has type checking at compilation time. C is statically typed compared to strongly typed for several reasons, including the presence of unions, non converting type casts, interoperability of pointers and arrays (they can act as each other), among others.
+
+2b) 9. What is polymorphism? What distinguishes its parametric and subtype varieties? What are generics?
+Polymorphism is where a struct or object can take on the form of several types and can work with multiple types. In parametric polymorphism, implementation usually occurs at compile time whereas subtype polymorphism can be performed/applied at compile time. Generics, or better known as templates in C++, are a parametric polymorphism and allow for customization of methods or classes to work with multiple types (usually seen as the T in code)
+cite: https://stackoverflow.com/questions/7815528/what-are-generics-in-java
+
+2c) 10. What is the difference between discrete and scalar types?
+Discrete types, also known as ordinal types, have a one-to-one correspondence with a subset of integers. Scalar types, also known as simple types, are made up of discrete, real, and complex types. Scalar types are more complex than discrete types and are made up of discretes.
+
+
+3) Page 346 exercise 7.18
+Bjarne Stroustrup,the original designer of C++, once described templates as “a clever kind of macro that obeys the scope, naming, and type rules of C++” [Str13, 2nd ed., p. 257]. How close is the similarity? What can templates do that macros can’t? What do macros do that templates don’t?
+Bjarne's description is close in some regards, but templates and macros are different in some key ways. Macros can be thought of as the "parents" to templates, coming first and setting the way as a primitive form of polymorphism. One example is macros are a simple in-line text substitution at compile time. Templates are functional in the ways that they are executed when the program is compiled and become integrated with the program. Macros are simply gone once we get to this point in the build process. Templates have the ability to be type checked by the compiler, whereas macros do not and are just expanded without any type checking. Macros have the ability to not be scope bound, since they are replacement effects. 
+cite: https://stackoverflow.com/questions/180320/are-c-templates-just-macros-in-disguise
+
+
+4) State which variables are type equivalent under (a) structural equivalence, (b) strict name equivalence, and (c) the actual C equivalence algorithm.
+Under structural equivalence:
+	A = B = C = D
+Under strict name equivalence:
+	A = B, C = D
+Under C equivalence:
+	C uses name equivalence for records, and structural equivalence for most other things. This means that A = B, C = D.
+
+
+5) Which of the following assignments does the compiler complain about?
+dp = vp, ip = dp, dp = ip, ip = vp, and ip = static_cast<int*>(dp) throw compiler errors.
+
+The compiler is doing a size comparison between the types. If the size is not the same, then it will throw an error. The void * is interesting because it does not have a fixed size. This means any pointer to a fixed sized location can be assigned to the void pointer. But the void pointer could be any size, so we shouldn't assign it to a fixed size pointer.
+
+If it were able to run despite the conversion error, it is possible but unlikely that ip will equal 3. This would happen at ip = dp. We would need the ability to correctly read the value from the void pointer. Then, assuming the double was not stored in IEEE float notation and could be in integer notation, and it was going to match least significant bits rather than the most significant bits. This could also be done more easily with an overloaded = function.
+
+
+6) page 346 exercise 7.17
+The C++ compiler will prevent you from making implicit casts classes. This is because C++ uses name equivalence for records. This is also because the function needs to know how much memory to allocate for its arguments. The function call only knows to create a new instance of the class it has as an parameter, and copy the value of the provided argument. It would then have to figure out the new type's size at run time. 
+
+
+
+7) Chap 8 CYU 1: what are struct tags in c? How are they related to type names? How did they change in c++?
+Struct tags are the user-defined name given to struct upon declaration, and while are not type declarations in and of themselves, they act like them  and are used very similarly (the only difference requiring the “struct” keyword before it). They changed in c++ by not needing the struct keyword, and instead treating the struct tag as the type implicitly.
+
+
+8) 8.12 since the size of the struct is 8 bytes (4 for the int, 1 for the char, and the other 3 for padding), we can calculate any index by adding the size of the struct per index we want. In this case, 1000 + 3(10)(8) + 7(8) = 1296
+
+
+9) 

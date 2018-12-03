@@ -1,0 +1,43 @@
+John Henry Burns
+Peter Golden
+Zach Halpern
+
+
+1) Exercise 8.16:
+
+double *a[n] => a is an array of n pointers to doubles
+
+double (*b)[n] => b is a pointer to an array of n doubles
+
+double (*c[n])() => c is an array of n function pointers that returns a double
+
+double (*d())[n] => d is a function pointer of n elements that returns a double
+
+2) Exercise 9.15:
+
+double ( *foo( double (*)(double, double[]), double ) ) (double, …) =>
+
+Foo is a function taking a function parameter. This inner function takes a double and a pointer to a double as arguments, and returns a double. Foo returns a pointer to a function taking a variable amount of arguments, the first of which is a double, and returns a double.
+
+3)
+k = 3 and the whole print statement is 4  12  3 36  96  7. When the pointer i is incremented by one, it increments itself by the size of it's type. thus (int * 0)++ = int * 4. a+k means we add k*size_of_type(a) to the address pointed to by a. &(a[k]) is equivalent to a+k, so a[8] = 96. In the last print statement, we get the amount of memory blocks (of sizeof(typeof(a))) between a[8] and a+1.
+
+4)7.4 CYU 27
+
+Duck typing uses the duck test: "If it walks like it's a duck and it quacks like its a duck, then it must be a duck. This is used for mostly runtime type checking, and is used by mostly non-compiled languages. C++ actually still supports some types of ducktyping for runtime checking. JavaScript is a language that implement duck typing.
+
+Duck typing is a form of polymorphism. The same object could be "duck tested" and resolved to 2 different types. If we have a parent and child class, it is concievable that a child may pass the "duck test" for a parent class.
+
+5) 7.4 CYU 28
+
+The distinction between overloading and genetics is that overloads are explicit and distinct redeclaration of the same function for multiple types, written by the programmer;  if it’s not overloaded for a certain set of parameters, then the code will break. On the other hand, generics are a way to write type-safe code that will work on any data types, given they have the appropriate operators needed; the compiler will create an instance of a class/method correlating to each specific type usage of it. The reason why overloading is sometimes referred to ad hoc (or “special case”) polymorphism is because they act very similarly in usage and output, even if their implementations are different.
+
+6) 9.2 CYU 11
+
+In-line subroutines differ from macros in many ways, including: in-line subroutines are expanded at compile time, while macros are handled by the preprocessor; in-line subroutines are defined in the same way regular functions are, and can access data, while macros are just code snippet replacements; and in-line subroutines aren’t necessarily expanded on all invocations (it’s up to the compiler), while macros are always expanded.
+
+7) 9.2 CYU 12 
+
+It would make sense to expand a subroutine inline whenever the executable can benefit from slightly longer pieces of code instead of making many function calls (requiring overhead for each call). One such example includes recursive functions that may hit the base case more often than not; by inlining these calls, we could eliminate many unnecessary function calls for more efficient code
+
+

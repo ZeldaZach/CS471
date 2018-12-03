@@ -44,15 +44,21 @@ HIGH ADDRESSES (0xFFFFFF)
 
 LOW ADDRESSES (0x000000)
 
-b) The program stack grows from higher addresses to lower addresses
+2b) The program stack grows from higher addresses to lower addresses
 
-c) SEE ATTACHED powF.S FILE
+2c) SEE ATTACHED powF.S FILE
 
 3) The recursive powF works a bit differently, instead calling a sub-routine and updating the stack in-place. The non-optimized code kept creating new subroutine calls whereas this implementation adds a simple for loop to the equation.
 
-4)
+4) Many storage-management algorithms maintain a list of free blocks.  Here are two different algorithms, first fit and best fit, used to search this list and return a block of the appropriate size.  Which strategy, if either, will result in lower external fragmentation?  What does external fragmentation depend on?
 
-5)
+Best fit will result in less external fragmentation. External fragmentation happens when here is enough total memory space to satisfy a request but the available spaces are not contiguous. Thus by storing memory where it best fits, the unavoidable spaces between data will be smaller.
+
+5) What is the complexity of using first fit algorithm to allocate blocks?  Briefly explain an algorithm to speed up the allocation. What is the complexity of this modification?
+
+The first fit algorithm is worst case linear. This occurs when the block will not fit, or only fits into the last found space. Heuristically, the first fit algorithm will execute faster than best fit.
+
+We can do this by keeping a list of free blocks in our memory space. When one is allocated to, we remove it from the free list. It will be returned when deallocate the space. We will keep the list sorted in decreaseing order of size. If we keep the largest free block first, we are likely to get a hit on the first block. Thus the look up time for allocation would be constant. 
 
 6) Page 124 CYU #4
 The difference between the lifetime of a name-to-object binding and its visibility is that its lifetime encapsulates all the time between the binding's creation and estruction, while its visibility describes whether or not that certain binding will be used. For instance, if a global and local variable share the same name, within the local variable's scope, the global variable's binding is invisible and cannot be accessed.
