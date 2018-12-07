@@ -1,0 +1,48 @@
+PART A:
+1) (\x -> x) type is a -> a
+
+2a) (\x -> x) 3 value is 3
+2b) (\x -> x) (+) 5 3 value is 8
+2c) (\x -> x) (+) value is not defined because this breaks down to (+) but no args for the operation
+2d) This abstraction could be called the identity abstraction
+
+
+3a) (\x -> x + x) 3 should be 6
+3b) The Expression (E) is x + x
+
+4a) (\x -> 3) 6 should be 3
+4b) This is a constant function
+
+PART B:
+1.1) hLen is not recursive because it uses lambda expressions that expand out to create one call.
+1.2) hLen is a higher order function because it is a lambda expression, which are a higher order function
+1.3a) The answer is 12. The logic shows that we will do 1 + sum [5,6] => 1 + 11 = 12
+1.3b) The answer is 6. The logic shows we will have 1 + head [5,6] => 1 + 5 = 6
+
+hLen has nothing to do with the functions passed in.
+
+2) hLen myLength [4,5,6] => 1 + myLength [5,6] = 3
+3) The relationship of hLen and hLen myLength are the same, since they will both return the size of the list
+
+PART C:
+
+1) hFact = (\f x -> if x == 0 then 1 else x * (f (x - 1)))
+hFact has type (Integer -> Integer) -> Integer -> Integer because its lambda expression takes a function that takes an integer and will end up returning an integer
+
+2) hFact (^ 2) 4 should return 4 * (^ 2) (3) = 4 * 3^2 = 4*9 = 36. This is confirmed by running it.
+
+3) The value of hFactorial factorial 5 is the same as factorial 5: 120
+
+PART D:
+
+1) Integer -> Integer because it will expand the lambda to take an integer and give us back an integer
+
+2a) fix f = f (fix f) is type (f -> f) -> f bcause it will take a function and then pass it back the ssame call, eventually ending with a single function out
+
+2b) You cannot do "fix f = f fix f" because it will try to evaluate f passing in fix and then calling f again with no argument. 
+
+3a) factorial 6 = 720
+3b) hFact factorial 6 = 720
+3c) factorial' 6 = 720
+3d) fix hFact 6 = 720
+
